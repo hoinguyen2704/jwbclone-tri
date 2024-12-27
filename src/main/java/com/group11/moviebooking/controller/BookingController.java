@@ -6,7 +6,6 @@ import com.group11.moviebooking.service.CustomerService;
 import com.group11.moviebooking.service.MovieService;
 import com.group11.moviebooking.service.SeatService;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +19,9 @@ import java.util.Map;
 @Controller
 public class BookingController {
     private final MovieService movieService;
-    private BookingService bookingService;
-    private CustomerService customerService;
-    private SeatService seatService;
+    private final BookingService bookingService;
+    private final CustomerService customerService;
+    private final SeatService seatService;
 
     public BookingController(BookingService bookingService, CustomerService customerService, SeatService seatService, MovieService movieService) {
         this.bookingService = bookingService;
@@ -31,7 +30,7 @@ public class BookingController {
         this.movieService = movieService;
     }
 
-    public boolean createBooking(long customer_id, int showtime_id, int total_price){
+    public boolean createBooking(long customer_id, int showtime_id, int total_price) {
         return bookingService.createBooking(customer_id, showtime_id, total_price);
     }
 
@@ -42,7 +41,6 @@ public class BookingController {
         String name = payload.get("name");
         String phone = payload.get("phone");
         String email = payload.get("email");
-
         // Lấy thông tin ghế đã chọn và các thông tin khác từ session
         List<Map<String, Object>> selectedSeats = (List<Map<String, Object>>) session.getAttribute("selectedSeats");
         Integer totalPrice = (Integer) session.getAttribute("totalPrice");
@@ -52,13 +50,9 @@ public class BookingController {
         String start_time = (String) session.getAttribute("start_time");
         int movie_id = (Integer) session.getAttribute("movie_id");
         String seats = (String) session.getAttribute("seats");
-
         String movie_title = movieService.getMovie(movie_id);
         session.setAttribute("movie_title", movie_title);
-
         CustomerEntity customer = customerService.getCustomerByEmail(email);
-
-
         // Lặp qua từng ghế đã chọn và tạo booking cho từng ghế
         for (Map<String, Object> seatData : selectedSeats) {
             String seatRow = String.valueOf(seatData.get("row"));
@@ -73,7 +67,6 @@ public class BookingController {
             boolean isBookingSeatCreated = bookingService.createBookingSeat(booking_id, seat_id);
 
         }
-
         modelAndView.addObject("movie_title", movie_title);
         modelAndView.addObject("totalPrice", totalPrice);
         modelAndView.addObject("seats", seats);
