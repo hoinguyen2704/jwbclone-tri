@@ -84,7 +84,7 @@ form {
 
 input {
     background-color: var(--theme-bg);
-    color: var(--theme-text);
+    color: black;
     /* #eee; */
     border: none;
     padding: 12px 15px;
@@ -104,7 +104,16 @@ input {
     min-height: 580px;
     margin-top: 45px;
 }
-
+.container_signup_signin2 {
+    background: var(--theme-bg);
+    color: var(--theme-text);
+    border-radius: 10px;
+    box-shadow: 0 14px 28px var(--theme-border), 0 10px 10px var(--theme-border);
+    width: 768px;
+    max-width: 100%;
+    min-height: 580px;
+    margin-top: 45px;
+}
 .form-container {
     position: absolute;
     top: 0;

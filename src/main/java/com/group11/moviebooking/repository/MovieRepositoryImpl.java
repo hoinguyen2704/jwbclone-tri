@@ -2,6 +2,7 @@ package com.group11.moviebooking.repository;
 
 
 import com.group11.moviebooking.entity.MovieEntity;
+import com.group11.moviebooking.model.MovieDTO;
 import com.group11.moviebooking.util.ConnectionPool;
 import com.group11.moviebooking.util.ConnectionPoolImpl;
 import org.springframework.stereotype.Repository;
@@ -114,6 +115,38 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
     }
 
     @Override
+    public MovieEntity getMoviesById(int movie_id) {
+        MovieEntity movieEntity = new MovieEntity();
+        String sql = "SELECT * FROM tblmovies WHERE movie_id = ?";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getMoviesById");
+             PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, movie_id);
+            try (ResultSet rs = pre.executeQuery()) {
+                if (rs.next()) {
+                    movieEntity.setMovie_id(rs.getInt("movie_id"));
+                    movieEntity.setMovie_title(rs.getString("movie_title"));
+                    movieEntity.setMovie_description(rs.getString("movie_description"));
+                    movieEntity.setMovie_rating(rs.getFloat("movie_rating"));
+                    movieEntity.setMovie_duration(rs.getInt("movie_duration"));
+                    movieEntity.setMovie_trailer_url(rs.getString("movie_trailer_url"));
+                    movieEntity.setMovie_release_date(rs.getString("movie_release_date"));
+                    movieEntity.setMovie_created_at(rs.getString("movie_created_at"));
+                    movieEntity.setMovie_main_actor(rs.getString("movie_main_actor"));
+                    movieEntity.setMovie_director(rs.getString("movie_director"));
+                    movieEntity.setMovie_studio(rs.getString("movie_studio"));
+                    movieEntity.setMovie_country(rs.getString("movie_country"));
+                    movieEntity.setMovie_genre(rs.getString("movie_genre"));
+                    movieEntity.setMovie_for_age(rs.getInt("movie_for_age"));
+                    movieEntity.setMovie_poster_url(rs.getString("movie_poster_url"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movieEntity;
+    }
+
+    @Override
     public List<MovieEntity> getAllMovies() {
         ArrayList<MovieEntity> movies = new ArrayList<>();
         String sql = "SELECT * FROM tblmovies";
@@ -121,6 +154,24 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
                 addMovieRSToList(rs, movies);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
+    @Override
+    public List<MovieEntity> getAllMovies(int page) {
+        ArrayList<MovieEntity> movies = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovies Limit 10 offset ?";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getAllMovies");
+             PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, (page - 1) * 10);
+            try (ResultSet rs = pre.executeQuery()) {
+                while (rs.next()) {
+                    addMovieRSToList(rs, movies);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -160,6 +211,24 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
         return movies;
     }
 
+    @Override
+    public ArrayList<MovieEntity> getLatestMovies(int page) {
+        ArrayList<MovieEntity> movies = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovies " + "ORDER BY movie_release_date DESC " + "Limit 10 offset ?;";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getLatestMovies");
+             PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, (page - 1) * 10);
+            try (ResultSet rs = pre.executeQuery()) {
+                while (rs.next()) {
+                    addMovieRSToList(rs, movies);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
     public ArrayList<MovieEntity> getTopMovieByRating() {
         ArrayList<MovieEntity> movies = new ArrayList<>();
         String sql = "SELECT * FROM tblmovies " + "ORDER BY movie_rating DESC " + "LIMIT 12;";
@@ -175,10 +244,49 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
         return movies;
     }
 
+    @Override
+    public ArrayList<MovieEntity> getTopMovieByRating(int page) {
+        ArrayList<MovieEntity> movies = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovies " + "ORDER BY movie_rating DESC " + "Limit 8 offset ?";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getTopMovieByRating");
+             PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, (page - 1) * 8);
+            try (ResultSet rs = pre.executeQuery()) {
+                while (rs.next()) {
+                    addMovieRSToList(rs, movies);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
     public ArrayList<MovieEntity> getMoviesForAdults() {
         ArrayList<MovieEntity> movies = new ArrayList<>();
         String sql = "SELECT * FROM tblmovies " + "WHERE movie_for_age >= 18 " + "ORDER BY movie_rating DESC ";
         try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getMoviesForAdults"); PreparedStatement pre = connection.prepareStatement(sql)) {
+            try (ResultSet rs = pre.executeQuery()) {
+                while (rs.next()) {
+                    addMovieRSToList(rs, movies);
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
+    @Override
+    public ArrayList<MovieEntity> getMoviesForAdults(int page) {
+        ArrayList<MovieEntity> movies = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovies " + "WHERE movie_for_age >= 18 " + "ORDER BY movie_rating DESC Limit 10 offset ?";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getMoviesForAdults");
+             PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, (page - 1) * 10);
             try (ResultSet rs = pre.executeQuery()) {
                 while (rs.next()) {
                     addMovieRSToList(rs, movies);
@@ -209,38 +317,81 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
         return movies;
     }
 
-    public ResultSet getTopSellingMovies() {
-        String sql = "SELECT "
-                + "m.movie_id, "
-                + "m.movie_title, "
-                + "m.movie_poster_url, "
-                + "m.movie_description, "
-                + "m.movie_main_actor, "
-                + "m.movie_studio , "
-                + "m.movie_release_date , "
-                + "m.movie_director , "
-                + "m.movie_rating , "
-                + "m.movie_duration, "
-                + "COUNT(b.booking_id) AS total_tickets_sold, "
-                + "b.total_price AS ticket_price, "
-                + "SUM(b.total_price) AS revenue "
-                + "FROM "
-                + "tblmovies m "
-                + "JOIN "
-                + "tblshowtimes s ON m.movie_id = s.movie_id "
-                + "JOIN "
-                + "tblbookings b ON s.showtime_id = b.showtime_id "
-                + "GROUP BY " + "m.movie_id, m.movie_title, m.movie_poster_url "
-                + "ORDER BY " + "total_tickets_sold DESC, revenue DESC " + "LIMIT 5;";
-        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getTopSellingMovies");
+    @Override
+    public ArrayList<MovieEntity> getMoviesForKids(int page) {
+        ArrayList<MovieEntity> movies = new ArrayList<>();
+        String sql = "SELECT * FROM tblmovies " + "WHERE movie_for_age <= 14 " + "ORDER BY movie_rating DESC Limit 10 offset ?";
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getMoviesForKids");
              PreparedStatement pre = connection.prepareStatement(sql)) {
+            pre.setInt(1, (page - 1) * 10);
             try (ResultSet rs = pre.executeQuery()) {
-                return rs;
+                while (rs.next()) {
+                    addMovieRSToList(rs, movies);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return movies;
+    }
+
+    public ArrayList<MovieDTO> getTopSellingMovies() {
+        ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
+        String sql = "SELECT  " +
+                "    m.movie_id,  " +
+                "    m.movie_title,  " +
+                "    m.movie_poster_url,  " +
+                "    m.movie_description,  " +
+                "    m.movie_main_actor,  " +
+                "    m.movie_studio,  " +
+                "    m.movie_release_date,  " +
+                "    m.movie_director,  " +
+                "    m.movie_rating,  " +
+                "    m.movie_duration,  " +
+                "    COUNT(b.booking_id) AS total_tickets_sold,  " +
+                "    SUM(b.total_price) AS total_price,  " +
+                "    SUM(b.total_price) AS revenue  " +
+                "FROM  " +
+                "    tblmovies m  " +
+                "JOIN  " +
+                "    tblshowtimes s ON m.movie_id = s.movie_id  " +
+                "JOIN  " +
+                "    tblbookings b ON s.showtime_id = b.showtime_id  " +
+                "GROUP BY  " +
+                "    m.movie_id, m.movie_title, m.movie_poster_url, m.movie_description, m.movie_main_actor, m.movie_studio, " +
+                "    m.movie_release_date, m.movie_director, m.movie_rating, m.movie_duration  " +
+                "ORDER BY  " +
+                "    total_tickets_sold DESC, revenue DESC  " +
+                "LIMIT 5;";
+
+        try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.getTicketsSoldAndRevenue");
+             PreparedStatement pre = connection.prepareStatement(sql);
+             ResultSet rs = pre.executeQuery()) {
+            try {
+                while (rs.next()) {
+                    MovieDTO movie = new MovieDTO();
+                    movie.setMovie_id(rs.getInt("movie_id"));
+                    movie.setMovie_title(rs.getString("movie_title"));
+                    movie.setMovie_poster_url(rs.getString("movie_poster_url"));
+                    movie.setMovie_release_date(rs.getString("movie_release_date"));
+                    movie.setMovie_description(rs.getString("movie_description"));
+                    movie.setMovie_director(rs.getString("movie_director"));
+                    movie.setMovie_duration(rs.getInt("movie_duration"));
+                    movie.setMovie_studio(rs.getString("movie_studio"));
+                    movie.setMovie_rating(rs.getFloat("movie_rating"));
+                    movie.setMovie_main_actor(rs.getString("movie_main_actor"));
+                    movie.setTotal_tickets_sold(rs.getInt("total_tickets_sold"));
+                    movie.setTicket_price(rs.getFloat("total_price"));
+                    movie.setRevenue(rs.getFloat("revenue"));
+                    movieDTOs.add(movie);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movieDTOs;
     }
 
     public HashMap<Object, Object> getTicketsSoldAndRevenue() {
@@ -274,7 +425,7 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
     }
 
     @Override
-    public boolean addMovie(MovieEntity entity) {
+    public boolean addMovie(MovieDTO entity) {
         String sql = "INSERT INTO tblmovies (movie_title, movie_description, movie_rating, movie_duration, movie_trailer_url, movie_release_date, movie_main_actor, movie_director, movie_studio, movie_country, movie_genre, movie_for_age, movie_poster_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.addMovie");
              PreparedStatement pre = connection.prepareStatement(sql)) {
@@ -299,7 +450,7 @@ public class MovieRepositoryImpl extends BasicImpl implements MovieRepository {
     }
 
     @Override
-    public boolean updateMovie(MovieEntity entity) {
+    public boolean updateMovie(MovieDTO entity) {
         String sql = "UPDATE tblmovies SET movie_title = ?, movie_description = ?, movie_rating = ?, movie_duration = ?, movie_trailer_url = ?, movie_release_date = ?, movie_main_actor = ?, movie_director = ?, movie_studio = ?, movie_country = ?, movie_genre = ?, movie_for_age = ?, movie_poster_url = ? WHERE movie_id = ?";
         try (Connection connection = connectionPool.getConnection("MovieRepositoryImpl.updateMovie");
              PreparedStatement pre = connection.prepareStatement(sql)) {

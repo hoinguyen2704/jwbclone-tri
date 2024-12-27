@@ -189,7 +189,7 @@
                 <c:forEach var="itemMovieRating" items="${moviesMovieByRating}">
                     <div class="item vhny-grid">
                         <div class="box16" style="height: 400px; width: 265px;">
-                            <a href="/movies">
+                            <a href=".id${itemMovieRating.movie_id}" data-toggle="modal">
                                 <figure>
                                     <img class="img-fluid"
                                          src="assets/images/banner/${itemMovieRating.movie_poster_url}"
@@ -204,9 +204,67 @@
                                 </div>
                                 <span class="fa fa-play video-icon" aria-hidden="true"></span>
                             </a>
+                            <div class="modal fade id${itemMovieRating.movie_id}" id="myModal" tabindex="-1"
+                                 role="dialog"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content" id="mymodalcontent">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="exampleModalLongTitle">DETAILS</h4>
+                                            <button type="button" class="closebtn" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="dynamic-content">
+                                            <img src="assets/images/banner/${itemMovieRating.movie_poster_url}"
+                                                 class="img-fluid modalimg" alt=""/>
+                                            <p>
+                                            <h3>Release Date&nbsp;:${itemMovieRating.movie_release_date}</h3>
+                                            <h3>Venue&nbsp;:${itemMovieRating.movie_country} </h3>
+                                            </p>
+                                            <h4>About Movie</h4>
+                                            <p>
+                                                    ${itemMovieRating.movie_description}
+                                            </p>
+                                            <h4>Star Cast</h4>
+                                            <p>
+                                                Main actor: ${itemMovieRating.movie_main_actor}<br/>
+                                                Audio: ${itemMovieRating.movie_studio}<br/>
+                                            </p>
+                                        </div>
+                                        <div class="bookbtn">
+                                            <!-- window.open('/ticket-booking','_blank'); -->
+                                            <button type="button" class="btn btn-success"
+                                                    onclick="location.href='/ticket-booking?movie_id=${itemMovieRating.movie_id}'">
+                                                Book
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </c:forEach>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="/home?page_popular=1">1</a></li>
+                        <li class="page-item"><a class="page-link" href="/home?page_popular=2">2</a></li>
+                        <li class="page-item"><a class="page-link" href="/home?page_popular=3">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
@@ -230,7 +288,7 @@
                 <c:forEach var="itemMovieLatest" items="${moviesMovieByLatestMovies}">
                     <div class="item vhny-grid">
                         <div class="box16 mb-0" style="height: 320px;">
-                            <a href="/movies">
+                            <a href=".id${itemMovieLatest.movie_id}" data-toggle="modal">
                                 <figure>
                                     <img class="img-fluid"
                                          src="assets/images/banner/${itemMovieLatest.movie_poster_url}" alt="">
@@ -244,6 +302,45 @@
                                 </div>
                                 <span class="fa fa-play video-icon" aria-hidden="true"></span>
                             </a>
+                            <div class="modal fade id${itemMovieLatest.movie_id}" id="myModal" tabindex="-1"
+                                 role="dialog"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content" id="mymodalcontent">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="exampleModalLongTitle">DETAILS</h4>
+                                            <button type="button" class="closebtn" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body" id="dynamic-content">
+                                            <img src="assets/images/banner/${itemMovieLatest.movie_poster_url}"
+                                                 class="img-fluid modalimg" alt=""/>
+                                            <p>
+                                            <h3>Release Date&nbsp;:${itemMovieLatest.movie_release_date}</h3>
+                                            <h3>Venue&nbsp;:${itemMovieLatest.movie_country} </h3>
+                                            </p>
+                                            <h4>About Movie</h4>
+                                            <p>
+                                                    ${itemMovieLatest.movie_description}
+                                            </p>
+                                            <h4>Star Cast</h4>
+                                            <p>
+                                                Main actor: ${itemMovieLatest.movie_main_actor}<br/>
+                                                Audio: ${itemMovieLatest.movie_studio}<br/>
+                                            </p>
+                                        </div>
+                                        <div class="bookbtn">
+                                            <!-- window.open('/ticket-booking','_blank'); -->
+                                            <button type="button" class="btn btn-success"
+                                                    onclick="location.href='redirect:/ticket-booking?movie_id=${itemMovieLatest.movie_id}'">
+                                                Book
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <h3><a class="title-gd" href="/movies">${itemMovieLatest.movie_title}</a></h3>
                         <div class="button-center text-center mt-4">

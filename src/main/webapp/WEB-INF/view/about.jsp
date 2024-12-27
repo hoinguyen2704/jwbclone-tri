@@ -125,7 +125,7 @@
             <div class="stats_left">
                 <div class="counter_grid">
                     <div class="icon_info">
-                        <p class="counter">165</p>
+                        <p class="counter">${showTimeSize}</p>
                         <h4>Shows</h4>
 
                     </div>

@@ -3,15 +3,11 @@ package com.group11.moviebooking.controller;
 import com.group11.moviebooking.Mapper.MappingDTOtoJSON;
 import com.group11.moviebooking.entity.AdminEntity;
 import com.group11.moviebooking.entity.CustomerEntity;
-import com.group11.moviebooking.entity.MovieEntity;
 import com.group11.moviebooking.model.CustomerDTO;
 import com.group11.moviebooking.model.MovieDTO;
 import com.group11.moviebooking.model.RoomDTO;
+import com.group11.moviebooking.model.ShowTimeDTO;
 import com.group11.moviebooking.service.*;
-import com.group11.moviebooking.entity.AdminEntity;
-import com.group11.moviebooking.entity.CustomerEntity;
-import com.group11.moviebooking.service.CustomerService;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,17 +22,20 @@ import java.util.List;
 @Controller
 @RequestMapping("/")
 public class CustomerController {
-    private RevenueService revenueService;
-    private MappingDTOtoJSON map;
     private final AdminService adminService;
     private final CustomerService customerService;
     private final MovieService movieService;
     private final RoomService roomService;
-    public CustomerController(AdminService adminService, CustomerService customerService, MovieService movieService, RoomService roomService) {
+    private final ShowTimeService showTimeService;
+    private RevenueService revenueService;
+    private MappingDTOtoJSON map;
+
+    public CustomerController(AdminService adminService, CustomerService customerService, MovieService movieService, RoomService roomService, ShowTimeService showTimeService) {
         this.adminService = adminService;
         this.customerService = customerService;
         this.movieService = movieService;
         this.roomService = roomService;
+        this.showTimeService = showTimeService;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
@@ -46,6 +45,7 @@ public class CustomerController {
         System.out.println(movies);
         return "/home";
     }
+
     @RequestMapping(value = "/sign", method = RequestMethod.GET)
     public String getSign(Model model1) {
         model1.addAttribute("SignUp", new CustomerDTO());
@@ -58,9 +58,11 @@ public class CustomerController {
         List<MovieDTO> AllMovies = this.movieService.getallMovies();
         ArrayList<MovieDTO> movies = this.movieService.getallMoviesLimit(4);
         List<RoomDTO> allRooms = this.roomService.getAllRoom();
+        List<ShowTimeDTO> allShowTime = this.showTimeService.getShowTimeDTO();
 
         model.addAttribute("moviesSize", AllMovies.size());
         model.addAttribute("roomsSize", allRooms.size());
+        model.addAttribute("showTimeSize", allShowTime.size());
         model.addAttribute("customers_size", this.customerService.getAllCustomers().size());
 
         model.addAttribute("moviesBannerSlide", movies);
@@ -89,6 +91,7 @@ public class CustomerController {
         return "tables-customer";
 //        return customers;
     }
+
     @RequestMapping(value = "/e-ticket", method = RequestMethod.GET)
     public String getE_Ticket() {
         return "e-ticket";
@@ -144,21 +147,17 @@ public class CustomerController {
     @PostMapping(value = "/login")
     public String LoginCustomer(Model model, @ModelAttribute("SignIn") CustomerDTO user_SignInDTO) {
         CustomerEntity user_SignIn = this.customerService.ConvertCustomerDTOtoCustomer(user_SignInDTO);
-
         String email = user_SignIn.getCustomer_email();
         String password = user_SignIn.getCustomer_password();
-
         AdminEntity adminSignIn = this.adminService.getAdminByEmailAndPassword(email, password);
         if (adminSignIn != null) {
             return "redirect:/dashboard";
         }
-
         if (this.customerService.checkUserToLogin(email, password)) {
             CustomerEntity loggedInCustomer = this.customerService.getCustomerByEmailAndPassword(email, password);
             System.out.println("Sign in successful: " + loggedInCustomer);
             return "redirect:/home";
         }
-
         model.addAttribute("error", "Invalid email or password!\nor your account is disabled");
         return "sign_in";
     }

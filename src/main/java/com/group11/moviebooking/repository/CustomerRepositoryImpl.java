@@ -22,7 +22,7 @@ public class CustomerRepositoryImpl extends BasicImpl implements CustomerReposit
     @Override
     public boolean add(CustomerEntity customer) {
         String checkCustomerQuery = "SELECT * FROM tblcustomers WHERE customer_email = ?";
-        String insertSQL = "INSERT INTO tblcustomers (customer_name, customer_email, customer_password, " + "customer_phone, customer_date_of_birth, customer_gender, customer_is_active) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO tblcustomers (customer_name, customer_email, customer_password, " + "customer_phone, customer_date_of_birth, customer_gender, customer_is_active) VALUES (?, ?, md5(?), ?, ?, ?)";
         try (Connection connection = connectionPool.getConnection("CustomerServiceImpl.add")) {
             // Kiểm tra xem email đã tồn tại chưa
             try (PreparedStatement checkStmt = connection.prepareStatement(checkCustomerQuery)) {

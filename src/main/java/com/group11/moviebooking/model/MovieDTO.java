@@ -1,5 +1,7 @@
 package com.group11.moviebooking.model;
 
+import com.group11.moviebooking.entity.MovieEntity;
+
 public class MovieDTO {
     private int movie_id;
     private String movie_title;
@@ -177,6 +179,25 @@ public class MovieDTO {
 
     public void setRevenue(float revenue) {
         this.revenue = revenue;
+    }
+
+    public MovieDTO converEntityToDTO(MovieEntity movieEntity) {
+        MovieDTO movieDTO = new MovieDTO();
+        movieDTO.setMovie_id(movieEntity.getMovie_id());
+        movieDTO.setMovie_title(movieEntity.getMovie_title());
+        movieDTO.setMovie_description(movieEntity.getMovie_description());
+        movieDTO.setMovie_rating(movieEntity.getMovie_rating());
+        movieDTO.setMovie_duration(movieEntity.getMovie_duration());
+        movieDTO.setMovie_trailer_url(movieEntity.getMovie_trailer_url());
+        movieDTO.setMovie_release_date(movieEntity.getMovie_release_date());
+        movieDTO.setMovie_main_actor(movieEntity.getMovie_main_actor());
+        movieDTO.setMovie_director(movieEntity.getMovie_director());
+        movieDTO.setMovie_studio(movieEntity.getMovie_studio());
+        movieDTO.setMovie_country(movieEntity.getMovie_country());
+        movieDTO.setMovie_genre(movieEntity.getMovie_genre());
+        movieDTO.setMovie_for_age(movieEntity.getMovie_for_age());
+        movieDTO.setMovie_poster_url(movieEntity.getMovie_poster_url());
+        return movieDTO;
     }
 
     @Override

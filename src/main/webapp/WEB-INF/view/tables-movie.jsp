@@ -405,26 +405,15 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-<%--                        <h5 class="card-title">Datatables</h5>--%>
+                        <%--                        <h5 class="card-title">Datatables</h5>--%>
                         <button type="button" class="btn btn-info mb-2">
-                            <a href="/create-User" style="color: black;">Add Movie</a>
+                            <a href="/create_Movie" style="color: black;">Add Movie</a>
                         </button>
-<%--                        <p>--%>
-    <%--                            Add lightweight datatables to your project with using the--%>
-    <%--                            <a href="https://github.com/fiduswriter/Simple-DataTables"--%>
-    <%--                               target="_blank">Simple--%>
-    <%--                                DataTables</a>--%>
-    <%--                            library. Just add <code>.datatable</code> class name to any--%>
-    <%--                            table you wish to conver to a datatable. Check for--%>
-    <%--                            <a href="https://fiduswriter.github.io/simple-datatables/demos/"--%>
-    <%--                               target="_blank">more--%>
-    <%--                                examples</a>.--%>
-    <%--                        </p>--%>
-
                         <!-- Table with stripped rows -->
                         <table class="table datatable">
                             <thead>
                             <tr>
+                                <th>Poster</th>
                                 <th>Id</th>
                                 <th>Title</th>
                                 <th>movie_duration</th>
@@ -438,6 +427,12 @@
                             <tbody>
                             <c:forEach var="item" items="${moviesList}">
                                 <tr>
+                                    <td>
+                                        <img src="./assets/images/banner-slide/${item.movie_poster_url}"
+                                             alt="${movie.movie_title}"
+                                             title="${movie.movie_title}"
+                                             style="width: 200px;height: 95px;">
+                                    </td>
                                     <td>${item.movie_id}</td>
                                     <td>${item.movie_title}</td>
                                     <td>${item.movie_duration}</td>
@@ -452,20 +447,38 @@
                                                 View
                                             </button>
                                             <button type="button" class="btn btn-warning mb-2">
-                                                <a href="/editCustomer/${item.movie_id}"
+                                                <a href="/edit-movie/${item.movie_id}"
                                                    class="btn btn-warning mb-2"> Edit </a>
                                             </button>
                                             <button type="button" class="btn btn-danger mb-2"
                                                     onclick="confirmDelete(${item.movie_id})">
-                                                Change status
+                                                Delete movie
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
                             </c:forEach>
-
                             </tbody>
                         </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="/Movies?page=1">1</a></li>
+                                <li class="page-item"><a class="page-link" href="/Movies?page=2">2</a></li>
+                                <li class="page-item"><a class="page-link" href="/Movies?page=3">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                         <!-- End Table with stripped rows -->
                     </div>
                 </div>
@@ -511,10 +524,10 @@
 <!-- Template Main JS File -->
 <script>
     function confirmDelete(movie_id) {
-        var result = confirm("Are you sure you want to delete Customer with id = " + movie_id);
+        var result = confirm("Are you sure you want to delete movie with id = " + movie_id);
         if (result) {
 // Thực hiện hành động xóa, ví dụ như gửi yêu cầu tới server
-            window.location.href = '/deleteCustomer/' + movie_id;
+            window.location.href = '/deleteMovie/' + movie_id;
         }
     }
 

@@ -37,5 +37,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/assets/**").addResourceLocations("/resources/assets/");
         registry.addResourceHandler("/seat_selection/**").addResourceLocations("/resources/seat_selection/");
         registry.addResourceHandler("/editCustomer/assets/**").addResourceLocations("/resources/assets/");
+        registry.addResourceHandler("/edit-movie/assets/**").addResourceLocations("/resources/assets/");
     }
 }

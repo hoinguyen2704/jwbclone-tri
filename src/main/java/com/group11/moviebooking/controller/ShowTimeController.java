@@ -37,11 +37,13 @@ public class ShowTimeController {
     public ModelAndView showShowTimes(@RequestParam("movie_id") int movie_id) {
         ModelAndView modelAndView = new ModelAndView("/ticket-booking");
 
-        if (movie_id == -1) {
-            modelAndView.setViewName("error");
-            modelAndView.addObject("errorMessage", "Invalid movie ID.");
-            return modelAndView;
-        }
+        System.out.println("Movie ID: " + movie_id);
+
+//        if (movie_id == -1) {
+//            modelAndView.setViewName("error");
+//            modelAndView.addObject("errorMessage", "Invalid movie ID.");
+//            return modelAndView;
+//        }
 
         List<ShowTimeDTO> showtimes = getShowTimeByMovieId(movie_id);
         Set<String> uniqueDates = new LinkedHashSet<>();
@@ -52,7 +54,8 @@ public class ShowTimeController {
             uniqueDates.add(showtime.getShow_date());
             showtimesByDate.computeIfAbsent(showtime.getShow_date(), k -> new ArrayList<>()).add(showtime);
         }
-
+        System.out.println("Show time: " + showtimes);
+        System.out.println("Unique Dates: " + uniqueDates);
         modelAndView.addObject("uniqueDates", uniqueDates);
         modelAndView.addObject("showtimesByDate", showtimesByDate);  // Thêm danh sách showtimes theo ngày
         modelAndView.addObject("movie_id", movie_id);

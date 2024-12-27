@@ -63,4 +63,14 @@ public class ShowTimeService {
         return showtimeDTO;
     }
 
+    public List<ShowTimeDTO> getShowTimeDTO () {
+        List<ShowTimeEntity> showtimeEntities = showtimeRepositoryImpl.getAllShowTime();
+        List<ShowTimeDTO> showtimeDTOs = new ArrayList<ShowTimeDTO>();
+
+        for(ShowTimeEntity showtimeEntity : showtimeEntities){
+            ShowTimeDTO showtimeDTO = ShowTimeMapper.mapEntityToDTO(showtimeEntity);
+            showtimeDTOs.add(showtimeDTO);
+        }
+        return showtimeDTOs;
+    }
 }

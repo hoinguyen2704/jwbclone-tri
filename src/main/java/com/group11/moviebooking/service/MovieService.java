@@ -7,8 +7,6 @@ import com.group11.moviebooking.repository.MovieRepositoryImpl;
 import com.group11.moviebooking.util.MovieMapper;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +51,16 @@ public class MovieService {
         return movieDTOs;
     }
 
+    public ArrayList<MovieDTO> getallMovies(int page) {
+        ArrayList<MovieEntity> movieEntities = (ArrayList<MovieEntity>) movieRepositoryImpl.getAllMovies(page);
+        ArrayList<MovieDTO> movieDTOs = new ArrayList<>();
+        for (MovieEntity movieEntity : movieEntities) {
+            MovieDTO movieDTO = MovieMapper.mapEntityToDTO(movieEntity);
+            movieDTOs.add(movieDTO);
+        }
+        return movieDTOs;
+    }
+
     public ArrayList<MovieDTO> getallMoviesLimit(int limit) {
         ArrayList<MovieEntity> movieEntities = (ArrayList<MovieEntity>) movieRepositoryImpl.getAllMoviesLimit(limit);
         ArrayList<MovieDTO> movieDTOs = new ArrayList<>();
@@ -74,6 +82,17 @@ public class MovieService {
         return movieDTOs;
     }
 
+    public ArrayList<MovieDTO> getLatestMovies(int page) {
+        ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getLatestMovies(page);
+        ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
+
+        for (MovieEntity movieEntity : movieEntities) {
+            MovieDTO movieDTO = MovieMapper.mapEntityToDTO(movieEntity);
+            movieDTOs.add(movieDTO);
+        }
+        return movieDTOs;
+    }
+
     public ArrayList<MovieDTO> getTopMovieByRating() {
         ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getTopMovieByRating();
         ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
@@ -85,8 +104,28 @@ public class MovieService {
         return movieDTOs;
     }
 
+    public ArrayList<MovieDTO> getTopMovieByRating(int page) {
+        ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getTopMovieByRating(page);
+        ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
+
+        for (MovieEntity movieEntity : movieEntities) {
+            MovieDTO movieDTO = MovieMapper.mapEntityToDTO(movieEntity);
+            movieDTOs.add(movieDTO);
+        }
+        return movieDTOs;
+    }
+
     public ArrayList<MovieDTO> getMoviesForAdults() {
         ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getMoviesForAdults();
+        ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
+
+        for (MovieEntity movieEntity : movieEntities) {
+            MovieDTO movieDTO = MovieMapper.mapEntityToDTO(movieEntity);
+            movieDTOs.add(movieDTO);
+        }
+        return movieDTOs;
+    }    public ArrayList<MovieDTO> getMoviesForAdults(int page) {
+        ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getMoviesForAdults(page);
         ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
 
         for (MovieEntity movieEntity : movieEntities) {
@@ -107,34 +146,19 @@ public class MovieService {
         return movieDTOs;
     }
 
-    public ArrayList<MovieDTO> getTopSellingMovies() {
-        ResultSet rs = movieRepositoryImpl.getTopSellingMovies();
+    public ArrayList<MovieDTO> getMoviesForKids(int page) {
+        ArrayList<MovieEntity> movieEntities = movieRepositoryImpl.getMoviesForKids(page);
         ArrayList<MovieDTO> movieDTOs = new ArrayList<MovieDTO>();
-        try {
-            if (rs == null) {
-                return movieDTOs;
-            }
-            while (rs.next()) {
-                MovieDTO movie = new MovieDTO();
-                movie.setMovie_id(rs.getInt("movie_id"));
-                movie.setMovie_title(rs.getString("movie_title"));
-                movie.setMovie_poster_url(rs.getString("movie_poster_url"));
-                movie.setMovie_release_date(rs.getString("movie_release_date"));
-                movie.setMovie_description(rs.getString("movie_description"));
-                movie.setMovie_director(rs.getString("movie_director"));
-                movie.setMovie_duration(rs.getInt("movie_duration"));
-                movie.setMovie_studio(rs.getString("movie_studio"));
-                movie.setMovie_rating(rs.getFloat("movie_rating"));
-                movie.setMovie_main_actor(rs.getString("movie_main_actor"));
-                movie.setTotal_tickets_sold(rs.getInt("total_tickets_sold"));
-                movie.setTicket_price(rs.getFloat("ticket_price"));
-                movie.setRevenue(rs.getFloat("revenue"));
-                movieDTOs.add(movie);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+        for (MovieEntity movieEntity : movieEntities) {
+            MovieDTO movieDTO = MovieMapper.mapEntityToDTO(movieEntity);
+            movieDTOs.add(movieDTO);
         }
         return movieDTOs;
+    }
+
+    public ArrayList<MovieDTO> getTopSellingMovies() {
+        return this.movieRepositoryImpl.getTopSellingMovies();
     }
 
     public HashMap<Object, Object> getTicketsSoldAndRevenue() {
@@ -147,6 +171,23 @@ public class MovieService {
     public String getMovie(int movie_id) {
         return movieRepositoryImpl.getMovies(movie_id);
     }
+
+    public MovieDTO getMovieByMovieId(int movie_id) {
+        return MovieMapper.mapEntityToDTO(movieRepositoryImpl.getMoviesById(movie_id));
+    }
+
+    public boolean add(MovieDTO movie) {
+        return movieRepositoryImpl.addMovie(movie);
+    }
+
+    public boolean update(MovieDTO movie) {
+        return movieRepositoryImpl.updateMovie(movie);
+    }
+
+    public boolean delete(int movie_id) {
+        return movieRepositoryImpl.deleteMovie(movie_id);
+    }
+
 }
 
 

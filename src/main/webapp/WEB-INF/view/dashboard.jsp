@@ -554,12 +554,15 @@
                                     <tbody>
 
                                     <c:forEach items="${topselling}" var="movie">
-                                        <tr>
-                                            <th scope="row"><a href="#"><img
-                                                    src="${movie.movie_poster_url}"
+                                        <tr style="border: 2px solid rgba(100,100,255, 0.5);border-radius: 15px; box-sizing: content-box">
+                                            <td scope="row" >
+                                                <a href="#">
+                                                <img src="./assets/images/banner/${movie.movie_poster_url}"
                                                     alt="${movie.movie_title}"
                                                     title="${movie.movie_title}"
-                                                    style="width: 50px;"></a></th>
+                                                    style="width: 200px;height: 95px;">
+                                                </a>
+                                            </td>
                                             <td><a href="#"
                                                    class="text-primary fw-bold">${movie.movie_title}</a>
                                             </td>

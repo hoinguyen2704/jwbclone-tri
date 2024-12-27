@@ -47,7 +47,7 @@ public class SeatRepositoryImpl extends BasicImpl implements SeatRepository {
                 "AND bs.seat_id = s.seat_id;";
 
         try (Connection connection = connectionPool.getConnection("SeatRepositoryImpl.getSoldSeats");
-             PreparedStatement statement = this.con.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, room_id);
             statement.setString(2, show_date);
             statement.setString(3, start_time);
@@ -81,12 +81,9 @@ public class SeatRepositoryImpl extends BasicImpl implements SeatRepository {
             pre.setString(4, "BOOKED");
             // Thực thi câu lệnh SQL
             int rowsAffected = pre.executeUpdate();
-            // Commit các thay đổi vào DB
-            this.con.commit();
             if (rowsAffected > 0) {
                 System.out.println("Thanh cong !");
             }
-
             // Nếu số dòng bị ảnh hưởng > 0, tức là đã chèn thành công
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -99,7 +96,7 @@ public class SeatRepositoryImpl extends BasicImpl implements SeatRepository {
         int seat_id = 0;
         String sql = "SELECT seat_id FROM tblseats WHERE room_id = ? AND seat_row = ? AND seat_column = ?";
         try (Connection connection = connectionPool.getConnection("SeatRepositoryImpl.getSeatId");
-             PreparedStatement statement = this.con.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, room_id);
             statement.setString(2, seat_row);
             statement.setString(3, seat_column);
@@ -108,9 +105,9 @@ public class SeatRepositoryImpl extends BasicImpl implements SeatRepository {
                     seat_id = rs.getInt("seat_id");
                 }
             }
-            return seat_id;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return seat_id;
     }
 }

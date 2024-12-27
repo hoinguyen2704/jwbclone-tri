@@ -8,7 +8,6 @@ import com.group11.moviebooking.entity.PromotionEntity;
 import com.group11.moviebooking.model.CustomerDTO;
 import com.group11.moviebooking.model.MovieDTO;
 import com.group11.moviebooking.model.RevenueDTO;
-import com.group11.moviebooking.model.RoomDTO;
 import com.group11.moviebooking.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 //@RestController
@@ -48,6 +48,7 @@ public class DashboardController {
         HashMap<Object, Object> report = getTicketsSoldAndRevenue();
         ArrayList<MovieDTO> moviesMovieByLatestMovies = this.movieService.getLatestMovies();
         modelAndView.addObject("total_tickets_sold", report.get("total_tickets_sold"));
+        System.out.println("1222222222222");
         modelAndView.addObject("total_revenue", report.get("total_revenue"));
         modelAndView.addObject("customers_size", this.customerService.getAllCustomers().size());
         modelAndView.addObject("NewMovies", moviesMovieByLatestMovies);
@@ -64,6 +65,8 @@ public class DashboardController {
             ObjectMapper mapper = new ObjectMapper();
             String chartJson = mapper.writeValueAsString(topSelling); // Chuyển đổi thành JSON
             modelAndView.addObject("topselling", topSelling);
+            System.out.println("chả= " + chartJson);
+            System.out.println(topSelling);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,6 +97,78 @@ public class DashboardController {
         model1.addAttribute("customer_placeholder", customer);
         model1.addAttribute("customer_value", new CustomerDTO());
         return new ModelAndView("/create_User").addObject(model1);
+    }
+
+    @GetMapping(value = "create_Movie")
+    public ModelAndView showCreateMovie(Model model1) {
+
+        MovieDTO movie_placeholder = new MovieDTO();
+        movie_placeholder.setMovie_id(0);
+        movie_placeholder.setMovie_title("Title of movie");
+        movie_placeholder.setMovie_description("Description");
+        movie_placeholder.setMovie_rating(0);
+        movie_placeholder.setMovie_duration(0);
+        movie_placeholder.setMovie_trailer_url("Trailer URL");
+        movie_placeholder.setMovie_release_date("/dd/mm/yyyy");
+        movie_placeholder.setMovie_created_at("/dd/mm/yyyy");
+        movie_placeholder.setMovie_main_actor("Main actor");
+        movie_placeholder.setMovie_director("Director");
+        movie_placeholder.setMovie_studio("studio");
+        movie_placeholder.setMovie_country("country");
+        movie_placeholder.setMovie_genre("Genre");
+        movie_placeholder.setMovie_for_age(0);
+        movie_placeholder.setMovie_poster_url("Image URL");
+
+        model1.addAttribute("Movie_data", new MovieDTO());
+        model1.addAttribute("title", "Create Movie");
+        model1.addAttribute("description", "input the infomation of movies");
+        model1.addAttribute("action", "/create-Movie");
+        model1.addAttribute("movie_placeholder", movie_placeholder);
+        model1.addAttribute("movie_value", new MovieDTO());
+        return new ModelAndView("/create_Movie").addObject(model1);
+    }
+
+    @PostMapping(value = "/create-Movie")
+    public ModelAndView createMovie(@ModelAttribute("Movie_data") MovieDTO movie_data, Model model) {
+        ModelAndView modelAndView = new ModelAndView("/create_Movie");
+        if (movie_data.getMovie_title() == null ||
+                movie_data.getMovie_director() == null ||
+                movie_data.getMovie_genre() == null ||
+                movie_data.getMovie_for_age() == 0 ||
+                movie_data.getMovie_trailer_url() == null) {
+            model.addAttribute("error", "error movie information missing");
+            MovieDTO movie_placeholder = new MovieDTO();
+            movie_placeholder.setMovie_id(0);
+            movie_placeholder.setMovie_title("Title of movie");
+            movie_placeholder.setMovie_description("Description");
+            movie_placeholder.setMovie_rating(0);
+            movie_placeholder.setMovie_duration(0);
+            movie_placeholder.setMovie_trailer_url("Trailer URL");
+            movie_placeholder.setMovie_release_date("/dd/mm/yyyy");
+            movie_placeholder.setMovie_created_at("/dd/mm/yyyy");
+            movie_placeholder.setMovie_main_actor("Main actor");
+            movie_placeholder.setMovie_director("Director");
+            movie_placeholder.setMovie_studio("studio");
+            movie_placeholder.setMovie_country("country");
+            movie_placeholder.setMovie_genre("Genre");
+            movie_placeholder.setMovie_for_age(0);
+            movie_placeholder.setMovie_poster_url("Image URL");
+
+            model.addAttribute("Movie_data", new MovieDTO());
+            model.addAttribute("title", "Create Movie");
+            model.addAttribute("description", "input the infomation of movies");
+            model.addAttribute("action", "/create-Movie");
+            model.addAttribute("movie_placeholder", movie_placeholder);
+            model.addAttribute("movie_value", new MovieDTO());
+            System.out.println("ditmemay");
+            return modelAndView;
+        }
+        System.out.println(this.movieService.add(movie_data));
+        modelAndView.setViewName("tables-movie");
+        List<MovieDTO> movies = this.movieService.getallMovies();
+        modelAndView.addObject("moviesList", movies);
+        modelAndView.addObject(movies);
+        return modelAndView;
     }
 
     @PostMapping(value = "/create-User")
@@ -140,6 +215,53 @@ public class DashboardController {
         return modelAndView;
     }
 
+    @GetMapping("/edit-movie/{id}")
+    public ModelAndView editMovie(@PathVariable("id") int movieId, Model model) {
+        MovieDTO movie = this.movieService.getMovieByMovieId(movieId);
+
+        MovieDTO movie_placeholder = new MovieDTO();
+        movie_placeholder.setMovie_id(0);
+        movie_placeholder.setMovie_title("Title of movie");
+        movie_placeholder.setMovie_description("Description");
+        movie_placeholder.setMovie_rating(0);
+        movie_placeholder.setMovie_duration(0);
+        movie_placeholder.setMovie_trailer_url("Trailer URL");
+        movie_placeholder.setMovie_release_date("/dd/mm/yyyy");
+        movie_placeholder.setMovie_created_at("/dd/mm/yyyy");
+        movie_placeholder.setMovie_main_actor("Main actor");
+        movie_placeholder.setMovie_director("Director");
+        movie_placeholder.setMovie_studio("studio");
+        movie_placeholder.setMovie_country("country");
+        movie_placeholder.setMovie_genre("Genre");
+        movie_placeholder.setMovie_for_age(0);
+        movie_placeholder.setMovie_poster_url("Image URL");
+
+        model.addAttribute("action", "/edit_movie");
+
+        model.addAttribute("movie_value", movie);
+        model.addAttribute("Movie_data", movie);
+        model.addAttribute("title", "Edit Movie");
+        model.addAttribute("description", "input the new infomation of Movie");
+        model.addAttribute("movie_placeholder", movie_placeholder);
+
+        ModelAndView modelAndView = new ModelAndView("/edit_Movie");
+        return modelAndView;
+    }
+
+    @PostMapping("/edit_movie")
+    public String updateMovie(@ModelAttribute("Movie_data") MovieDTO movie_data) {
+        System.out.println(movie_data);
+        System.out.println(this.movieService.update(movie_data));
+        return "redirect:/Movies";
+        // Chuyển hướng lại trang danh sách khách hàng sau khi cập nhật
+    }
+
+    @GetMapping("/deleteMovie/{id}")
+    public String deleteMovie(@PathVariable("id") int movieId, Model model) throws Exception {
+        System.out.println(this.movieService.delete(movieId));
+        return "redirect:/Movies"; // Chuyển hướng lại trang danh sách phim sau khi xóa
+    }
+
     @PostMapping("/editCustomer")
     public String updateCustomer(@ModelAttribute("Register") CustomerDTO user_SignUp, Model model) {
         List<CustomerEntity> users = this.customerService.getAllCustomers();
@@ -150,7 +272,9 @@ public class DashboardController {
         List<CustomerEntity> customers = this.customerService.getAllCustomers();
         model.addAttribute("customersList", customers);
         return "redirect:/Customers";
-    }// Chuyển hướng lại trang danh sách khách hàng sau khi cập nhật
+        // Chuyển hướng lại trang danh sách khách hàng sau khi cập nhật
+    }
+
 
     @GetMapping("/deleteCustomer/{id}")
     public String deleteCustomer(@PathVariable("id") Long customerId, Model model) throws Exception {
@@ -162,11 +286,21 @@ public class DashboardController {
     }
 
     @GetMapping(value = "/Movies")
-    public String showMovies(Model model) {
-        List<MovieDTO> movies = this.movieService.getallMovies();
+    public String showMovies(Model model, @RequestParam(value = "page") Optional<String> pageOptional) {
+        int page = 1;
+        try {
+            if (pageOptional.isPresent()) {
+                page = Integer.parseInt(pageOptional.get());
+            }
+        } catch (NumberFormatException nfe) {
+            System.out.println("Invalid page number!");
+            page = 1;
+        }
+        List<MovieDTO> movies = this.movieService.getallMovies(page);
         model.addAttribute("moviesList", movies);
         return "tables-movie";
     }
+
 
     @ResponseBody
     public HashMap<Object, Object> getTicketsSoldAndRevenue() {

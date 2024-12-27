@@ -31,7 +31,7 @@ public class ShowTimeRepositoryImpl extends BasicImpl implements ShowTimeReposit
         String sql = "SELECT * FROM tblshowtimes WHERE movie_id = ? " +
                 "ORDER BY show_date ASC";
         try (Connection connection = connectionPool.getConnection("ShowTimeRepositoryImpl.getShowTimeByMovieId");
-             PreparedStatement pre = this.con.prepareStatement(sql)) {
+             PreparedStatement pre = connection.prepareStatement(sql)) {
             pre.setInt(1, movie_id);
             try (ResultSet rs = pre.executeQuery()) {
                 while (rs.next()) {
@@ -129,6 +129,22 @@ public class ShowTimeRepositoryImpl extends BasicImpl implements ShowTimeReposit
             throw new RuntimeException(e);
         }
         return showtimeEntity;
+    }
+
+    @Override
+    public List<ShowTimeEntity> getAllShowTime() {
+        List<ShowTimeEntity> showtimes = new ArrayList<>();
+        String sql = "SELECT * FROM tblshowtimes ORDER BY show_date ASC";
+        try (Connection connection = connectionPool.getConnection("ShowTimeRepositoryImpl.getAllShowTime");
+             PreparedStatement pre = connection.prepareStatement(sql);
+             ResultSet rs = pre.executeQuery()) {
+            while (rs.next()) {
+                addShowTimeToList(rs, showtimes);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return showtimes;
     }
 }
 

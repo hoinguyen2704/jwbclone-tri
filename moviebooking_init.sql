@@ -23,7 +23,6 @@ BEGIN
     END IF;
 END$$
 DELIMITER ;
-
 -- Thêm 20 bản ghi cho bảng tblcustomers
 INSERT INTO tblcustomers (customer_name, customer_email, customer_password, customer_phone, customer_date_of_birth, customer_gender)
 VALUES
@@ -105,6 +104,7 @@ CREATE TABLE tblmovies (
 );
 
 -- Thêm 20 bản ghi cho bảng tblmovies
+USE moviebooking_data;
 INSERT INTO tblmovies 
 (movie_title, movie_description, movie_rating, movie_duration, movie_trailer_url, movie_release_date, movie_main_actor, movie_director, movie_studio, movie_country, movie_genre, movie_for_age, movie_poster_url)
 VALUES
@@ -127,8 +127,16 @@ VALUES
 ('Inception', 				'A skilled thief is tasked with planting an idea in someone’s mind.',1.5, 148, 'y2TCjYiTGIo', '1999-10-15', 'Brad Pitt', 'David Fincher', '20th Century Fox', 'USA', 'Drama', 18, 'Inception-slide.png'),
 ('Interstellar', 			'A team of astronauts travels through a wormhole to save humanity.',5.5, 169, 'zSWdZVtXT7E', '1999-12-10', 'Tom Hanks', 'Frank Darabont', 'Warner Bros.', 'USA', 'Crime', 16, 'Interstellar-slide.png'),
 ('Titanic', 				'A love story set aboard the doomed Titanic ship.',7.7, 195, 'kVrqfYjkTdQ', '2022-12-16', 'Sam Worthington', 'James Cameron', '20th Century Studios', 'USA', 'Sci-Fi', 13, 'Titanic-slide.png'),
-('Avatar', 					'A paraplegic Marine on an alien planet helps the Na’vi people fight back.',3.3, 162, '7B_QyEpeEAQ', '2012-05-04', 'Robert Downey Jr.', 'Joss Whedon', 'Marvel Studios', 'USA', 'Action', 13, 'avatar-slide.png');
-
+('Avatar', 					'A paraplegic Marine on an alien planet helps the Na’vi people fight back.',3.3, 162, '7B_QyEpeEAQ', '2012-05-04', 'Robert Downey Jr.', 'Joss Whedon', 'Marvel Studios', 'USA', 'Action', 13, 'avatar-slide.png'),
+('The Shawshank Redemption', 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.',  9.3, 142, 'https://www.youtube.com/watch?v=6hB3S9bIaco', '1994-09-22', 'Tim Robbins', 'Frank Darabont', 'Castle Rock Entertainment', 'USA', 'Drama', 16, 'https://example.com/poster1.jpg'),
+('The Godfather', 			'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.', 9.2, 175, 'https://www.youtube.com/watch?v=sY1S34973zA', '1972-03-24', 'Marlon Brando', 'Francis Ford Coppola', 'Paramount Pictures', 'USA', 'Crime, Drama', 18, 'https://example.com/poster2.jpg'),
+('The Dark Knight', 		'When the menace known as the Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham.', 9.0, 152, 'https://www.youtube.com/watch?v=EXeTwQWrcwY', '2008-07-18', 'Christian Bale', 'Christopher Nolan', 'Warner Bros.', 'USA', 'Action, Crime, Drama', 13, 'https://example.com/poster3.jpg'),
+('Inception', 				'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.', 8.8, 148, 'https://www.youtube.com/watch?v=YoHD9XEInc0', '2010-07-16', 'Leonardo DiCaprio', 'Christopher Nolan', 'Warner Bros.', 'USA', 'Action, Adventure, Sci-Fi', 13, 'https://example.com/poster4.jpg'),
+('Forrest Gump', 			'The presidencies of Kennedy and Johnson, the events of Vietnam, Watergate, and other history unfold through the perspective of an Alabama man.', 8.8, 142, 'https://www.youtube.com/watch?v=bLvqoHBptjg', '1994-07-06', 'Tom Hanks', 'Robert Zemeckis', 'Paramount Pictures', 'USA', 'Drama, Romance', 13, 'https://example.com/poster5.jpg'),
+('Fight Club', 				'An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.', 8.8, 139, 'https://www.youtube.com/watch?v=SUXWAEX2jlg', '1999-10-15', 'Brad Pitt', 'David Fincher', '20th Century Fox', 'USA', 'Drama', 18, 'https://example.com/poster6.jpg'),
+('Pulp Fiction', 			'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.', 8.9, 154, 'https://www.youtube.com/watch?v=s7EdQ4FqbhY', '1994-10-14', 'John Travolta', 'Quentin Tarantino', 'Miramax', 'USA', 'Crime, Drama', 18, 'https://example.com/poster7.jpg'),
+('Schindler', 				'In German-occupied Poland during World War II, Oskar Schindler gradually becomes concerned for his Jewish workforce after witnessing their persecution.', 9.0, 195, 'https://www.youtube.com/watch?v=gG22XNhtnoY', '1993-12-15', 'Liam Neeson', 'Steven Spielberg', 'Universal Pictures', 'USA', 'Biography, Drama, History', 16, 'https://example.com/poster8.jpg'),
+('The Lord of the Rings: The Return of the King', "Gandalf and Aragorn lead the World of Men against Sauron's army to draw his gaze from Frodo and Sam as they approach Mount Doom.", 9.0, 201, 'https://www.youtube.com/watch?v=r5X-hFf6Bwo', '2003-12-17', 'Elijah Wood', 'Peter Jackson', 'New Line Cinema', 'USA', 'Action, Adventure, Drama', 13, 'https://example.com/poster10.jpg');
 
 -- Tạo bảng tblrooms (Phòng chiếu)
 CREATE TABLE tblrooms (
